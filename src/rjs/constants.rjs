@@ -1,0 +1,2 @@
+export READY  = "added"
+export UPDATE = "update"

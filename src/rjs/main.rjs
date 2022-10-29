@@ -1,0 +1,46 @@
+import '../css/style.css'
+import "*", as: Three, from: 'three'
+import [Scene], from: './scene'
+import [Renderer], from: './renderer'
+import [ sizes, resize, update ], from: './window'
+import [Camera], from: './camera'
+import [Weapon], from: './weapon'
+import [UPDATE], from: './constants'
+import [GUI], from: 'lil-gui'
+
+document.querySelector('#app').innerHTML = "<canvas class='webgl'></canvas>"
+
+canvas = document.querySelector 'canvas.webgl'
+scene = Scene.new
+scene.add_light
+
+renderer = Renderer(canvas).new
+renderer.update_resize(sizes)
+
+camera = Camera(sizes).new
+scene.add(camera)
+
+weapon = Weapon.new
+scene.add(weapon)
+
+resize do
+  camera.update_resize(sizes)
+  renderer.update_resize(sizes)
+end
+
+update do |dt|
+  renderer.render(scene, camera)
+  weapon.dispatchEvent({type: UPDATE, dt: dt})
+end
+
+weapon_action = {
+  draw: lambda { weapon.play_anim("draw", Three.LoopOnce) },
+  idle: lambda { weapon.play_anim("idle") },
+  reload: lambda { weapon.play_anim("reload", Three.LoopOnce) },
+  shoot: lambda { weapon.play_anim("shoot") },
+}
+gui = GUI.new
+gui.add weapon_action, 'draw'
+gui.add weapon_action, 'idle'
+gui.add weapon_action, 'reload'
+gui.add weapon_action, 'shoot'

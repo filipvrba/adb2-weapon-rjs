@@ -1,0 +1,25 @@
+import [ getDeltaTime ], from: './time'
+
+export sizes = {
+  width:  window.innerWidth,
+  height: window.innerHeight
+}
+
+export def resize &callback
+  window.addEventListener 'resize' do
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    callback()
+  end
+end
+
+export def update &callback
+  tick = lambda do
+    callback getDeltaTime()
+
+    window.requestAnimationFrame tick
+  end
+
+  tick()
+end

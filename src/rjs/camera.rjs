@@ -1,0 +1,19 @@
+import "*", as: Three, from: 'three'
+
+export class Camera < Three.PerspectiveCamera
+  def initialize sizes
+    settings = {
+      fov:      45,
+      aspect:   sizes.width / sizes.height,
+      near:     0.1,
+      far:      100,
+    }
+    
+    super settings.fov, settings.aspect, settings.near, settings.far
+  end
+
+  def update_resize sizes
+    this.aspect = sizes.width / sizes.height
+    this.updateProjectionMatrix()
+  end
+end

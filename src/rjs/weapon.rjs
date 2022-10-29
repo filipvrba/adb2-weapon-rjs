@@ -1,0 +1,72 @@
+import "*", as: Three, from: 'three'
+import [READY, UPDATE], from: './constants'
+import [GLTFLoader], from: 'three/examples/jsm/loaders/GLTFLoader'
+
+export class Weapon < Three.Object3D
+  def initialize
+    super
+    @addedListener = -> () { ready }
+    @updateListener = -> (event) { update(event.dt) }
+
+    this.addEventListener(READY, @addedListener)
+    @gltfLoader = GLTFLoader.new
+    @animations = nil
+    @animMixer = nil
+    @animAction = nil
+    @animAction_old = nil
+  end
+
+  def ready
+    this.addEventListener(UPDATE, @updateListener)
+    load_model("/models/ak47/ak47.gltf")
+  end
+
+  def update dt
+    if @animMixer
+      @animMixer.update(dt)
+    end
+  end
+
+  def load_model path
+    @gltfLoader.load path do |gltf|
+      gltf.scene.rotation.y = Math.PI * 0.5
+      this.parent.add gltf.scene
+      this.parent.updateAllMaterials
+
+      load_done(gltf)
+    end
+  end
+
+  def load_done gltf
+    add_animations(gltf.animations)
+    @animMixer = new Three.AnimationMixer(gltf.scene)
+    @animMixer.addEventListener 'finished' do
+      play_anim("idle")
+    end
+
+    play_anim("idle")
+  end
+
+  def add_animations anims
+    anims_map = {
+      draw: anims[0],
+      idle: anims[1],
+      reload: anims[2],
+      shoot: anims[3]
+    }
+    @animations = anims_map
+  end
+
+  def play_anim id, loop_event = Three.LoopRepeat
+    
+    @animAction_old = @animAction if @animAction
+    @animAction = @animMixer.clipAction(@animations[id])
+    @animAction.setLoop loop_event
+    @animAction.reset()    
+    @animAction.play()
+    # @animAction_old.stop() if @animAction_old
+    @animAction.crossFadeFrom(@animAction_old, 0.15) if @animAction_old
+
+    # @animAction.crossFadeFrom(@animAction_old, 1)
+  end
+end

@@ -1,0 +1,17 @@
+import "*", as: Three, from: 'three'
+
+clock = Three.Clock.new
+clock.start
+
+export def getDeltaTime
+  return clock.getDelta()
+end
+# previousTime = 0
+
+# export def getDeltaTime
+#   elapsedTime = clock.getElapsedTime()
+#   deltaTime = elapsedTime - previousTime
+#   previousTime = elapsedTime
+
+#   return deltaTime
+# end
