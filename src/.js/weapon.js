@@ -13,6 +13,7 @@ export class Weapon extends Three.Object3D {
 
   constructor() {
     super();
+    this.name = "weapon";
     this.#addedListener = () => this.ready;
     this.#updateListener = event => this.update(event.dt);
     this.addEventListener(READY, this.#addedListener);

@@ -1,0 +1,29 @@
+import "*", as: Three, from: 'three'
+import [GUI], from: 'lil-gui'
+import [READY], from: './constants'
+
+export class UI < Three.Object3D
+  def initialize
+    super
+    @addedListener = -> () { ready }
+    this.addEventListener(READY, @addedListener)
+
+    @gui = GUI.new
+  end
+
+  def ready
+    weapon = this.parent.getObjectByName("weapon")
+
+    weapon_action = {
+      draw: lambda { weapon.play_anim("draw", Three.LoopOnce) },
+      idle: lambda { weapon.play_anim("idle") },
+      reload: lambda { weapon.play_anim("reload", Three.LoopOnce) },
+      shoot: lambda { weapon.play_anim("shoot") },
+    }
+    
+    @gui.add weapon_action, 'draw'
+    @gui.add weapon_action, 'idle'
+    @gui.add weapon_action, 'reload'
+    @gui.add weapon_action, 'shoot'
+  end
+end

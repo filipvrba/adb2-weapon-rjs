@@ -6,7 +6,7 @@ import { sizes, resize, update } from "./window";
 import { Camera } from "./camera";
 import { Weapon } from "./weapon";
 import { UPDATE } from "./constants";
-import { GUI } from "lil-gui";
+import { UI } from "./ui";
 document.querySelector("#app").innerHTML = "<canvas class='webgl'></canvas>";
 let canvas = document.querySelector("canvas.webgl");
 let scene = new Scene;
@@ -17,6 +17,8 @@ let camera = new Camera(sizes);
 scene.add(camera);
 let weapon = new Weapon;
 scene.add(weapon);
+let ui = new UI;
+scene.add(ui);
 
 resize(() => {
   camera.update_resize(sizes);
@@ -26,28 +28,4 @@ resize(() => {
 update((dt) => {
   renderer.render(scene, camera);
   weapon.dispatchEvent({type: UPDATE, dt})
-});
-
-let weapon_action = {
-  draw() {
-    return weapon.play_anim("draw", Three.LoopOnce)
-  },
-
-  idle() {
-    return weapon.play_anim("idle")
-  },
-
-  reload() {
-    return weapon.play_anim("reload", Three.LoopOnce)
-  },
-
-  shoot() {
-    return weapon.play_anim("shoot")
-  }
-};
-
-let gui = new GUI;
-gui.add(weapon_action, "draw");
-gui.add(weapon_action, "idle");
-gui.add(weapon_action, "reload");
-gui.add(weapon_action, "shoot")
+})

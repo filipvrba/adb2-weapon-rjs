@@ -5,6 +5,8 @@ import [GLTFLoader], from: 'three/examples/jsm/loaders/GLTFLoader'
 export class Weapon < Three.Object3D
   def initialize
     super
+    this.name = "weapon"
+
     @addedListener = -> () { ready }
     @updateListener = -> (event) { update(event.dt) }
 

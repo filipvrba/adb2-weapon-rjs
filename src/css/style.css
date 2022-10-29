@@ -17,3 +17,7 @@ body
     left: 0;
     outline: none;
 }
+
+.lil-gui { 
+	left: 1em;
+}
